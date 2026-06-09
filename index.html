@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Villa RE">
+<meta name="theme-color" content="#0f1b30">
+<title>Villa Real Estate — نظام إدارة العقارات</title>
+<link rel="icon" href="assets/favicon.png">
+<link rel="apple-touch-icon" href="assets/icon-512.png">
+<link rel="manifest" href="manifest.json">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Cormorant+Garamond:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --navy:#1a2744;--navy2:#0f1b30;--navy3:#243352;--navy4:#1e2e45;
+  --cream:#e8dcc8;--cream2:#f5efe4;
+  --gold:#c9a96e;--gold2:#e8c98a;
+  --green2:#4ade80;--red2:#f87171;
+  --border:rgba(201,169,110,0.2);--border2:rgba(201,169,110,0.4);
+  --radius:14px;--radius-sm:9px;
+}
+html{background:var(--navy2)}
+body{background:var(--navy2);color:var(--cream);font-family:'Cairo',sans-serif;direction:rtl;min-height:100vh;overflow-y:scroll;-webkit-overflow-scrolling:touch}
+
+/* Header */
+.hdr{background:linear-gradient(180deg,var(--navy),var(--navy2));border-bottom:1px solid var(--border2);padding:0 16px;display:flex;align-items:center;justify-content:space-between;height:62px;position:sticky;top:0;z-index:100;padding-top:env(safe-area-inset-top)}
+.hdr-brand{display:flex;align-items:center;gap:11px}
+.hdr-logo{height:38px;width:auto;display:block;filter:drop-shadow(0 2px 6px rgba(0,0,0,.4))}
+.hdr-name{display:flex;flex-direction:column;line-height:1.05}
+.hdr-title{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:700;color:var(--cream);letter-spacing:3px}
+.hdr-sub{font-size:8.5px;color:var(--gold);letter-spacing:3px;margin-top:1px}
+.hdr-right{display:flex;align-items:center;gap:9px}
+.sheet-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;transition:background .3s;box-shadow:0 0 0 3px rgba(255,255,255,.04)}
+.sheet-dot.ok{background:var(--green2)}
+.sheet-dot.no{background:var(--red2)}
+.settings-btn{background:rgba(201,169,110,0.1);border:1px solid var(--border);border-radius:9px;width:38px;height:38px;color:var(--gold);font-size:18px;cursor:pointer;line-height:1;display:flex;align-items:center;justify-content:center;transition:background .15s}
+.settings-btn:active{background:rgba(201,169,110,0.25)}
+
+.main{padding:16px 16px 70px;display:flex;flex-direction:column;gap:14px;max-width:720px;margin:0 auto}
+
+/* Cards */
+.card{background:var(--navy);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.card-hd{padding:13px 16px;background:var(--navy2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:11px}
+.card-icon{width:36px;height:36px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;background:rgba(201,169,110,0.1);border:1px solid var(--border)}
+.card-title{font-size:14.5px;font-weight:700;color:var(--cream)}
+.card-sub{font-size:11px;color:var(--gold);margin-top:1px}
+.card-body{padding:16px}
+
+/* Settings */
+.settings-panel{display:none;background:var(--navy);border:1px solid var(--border2);border-radius:var(--radius);padding:16px}
+.settings-panel.open{display:block}
+.settings-label{font-size:12.5px;color:var(--gold2);font-weight:700;margin-bottom:7px;display:block}
+.settings-input{width:100%;background:var(--navy2);border:1.5px solid var(--border);border-radius:var(--radius-sm);color:var(--cream2);font-family:monospace;font-size:12px;padding:11px 12px;direction:ltr;text-align:left;outline:none;-webkit-appearance:none;transition:border-color .2s}
+.settings-input:focus{border-color:var(--gold)}
+.settings-input::placeholder{color:rgba(201,169,110,0.3)}
+.settings-row{display:flex;align-items:center;gap:8px;margin-top:11px}
+.btn-ghost{flex:1;padding:11px;background:rgba(201,169,110,0.1);border:1px solid var(--border2);border-radius:var(--radius-sm);color:var(--gold2);font-family:'Cairo';font-size:13px;font-weight:700;cursor:pointer}
+.btn-ghost:active{background:rgba(201,169,110,0.2)}
+.btn-gold{flex:1;padding:11px;background:linear-gradient(135deg,#e8c98a,#c9a96e,#a07840);border:none;border-radius:var(--radius-sm);color:var(--navy2);font-family:'Cairo';font-size:13px;font-weight:700;cursor:pointer}
+.btn-gold:active{opacity:.85}
+.id-status{font-size:11px;padding:5px 11px;border-radius:20px;white-space:nowrap;text-align:center}
+.id-ok{background:rgba(74,222,128,0.12);color:var(--green2);border:1px solid rgba(74,222,128,0.25)}
+.id-no{background:rgba(248,113,113,0.12);color:var(--red2);border:1px solid rgba(248,113,113,0.25)}
+.hint-box{margin-top:13px;padding-top:13px;border-top:1px solid var(--border);font-size:11px;color:rgba(201,169,110,0.55);line-height:1.9;direction:ltr;text-align:left}
+.hint-box b{color:var(--cream)}
+.hint-box code{color:var(--gold);font-family:monospace;word-break:break-all}
+
+/* Quick paste */
+.qp-toggle{display:flex;align-items:center;justify-content:space-between;cursor:pointer}
+.qp-toggle .chev{color:var(--gold);transition:transform .2s;font-size:13px}
+.qp-toggle.open .chev{transform:rotate(180deg)}
+.qp-body{display:none;margin-top:13px}
+.qp-body.open{display:block}
+textarea{width:100%;background:var(--navy2);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--cream);font-family:'Cairo';font-size:14px;line-height:1.7;padding:11px 13px;direction:rtl;outline:none;-webkit-appearance:none;resize:vertical;min-height:96px;transition:border-color .2s}
+textarea:focus{border-color:var(--gold)}
+textarea::placeholder{color:rgba(232,220,200,0.25)}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+.chip{background:rgba(201,169,110,0.08);border:1px solid var(--border);border-radius:20px;padding:6px 13px;font-size:12px;color:var(--gold2);font-family:'Cairo';cursor:pointer}
+.chip:active{background:rgba(201,169,110,0.2)}
+
+/* Form fields */
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.field{display:flex;flex-direction:column;gap:5px}
+.field.full{grid-column:1 / -1}
+.lbl{font-size:12px;color:var(--gold2);font-weight:600;display:flex;align-items:center;gap:5px}
+.lbl .req{color:var(--red2);font-size:13px;line-height:1}
+.inp,select{width:100%;background:var(--navy2);border:1.5px solid var(--border);border-radius:var(--radius-sm);color:var(--cream2);font-family:'Cairo';font-size:14px;padding:11px 12px;outline:none;-webkit-appearance:none;appearance:none;transition:border-color .2s}
+.inp:focus,select:focus{border-color:var(--gold)}
+.inp::placeholder{color:rgba(232,220,200,0.22)}
+.inp.num{direction:ltr;text-align:right}
+select{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'><path d='M2 4l4 4 4-4' stroke='%23c9a96e' stroke-width='1.6' fill='none'/></svg>");background-repeat:no-repeat;background-position:left 12px center;padding-left:30px}
+.field.bad .inp,.field.bad select{border-color:var(--red2)}
+
+.gold-line{height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:16px 0 0}
+.btn-submit{width:100%;padding:16px;margin-top:14px;background:linear-gradient(135deg,#e8c98a,#c9a96e,#a07840);border:none;border-radius:var(--radius-sm);color:var(--navy2);font-family:'Cairo';font-size:15.5px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;transition:opacity .2s}
+.btn-submit:active{opacity:.85}
+.btn-submit:disabled{opacity:.45;cursor:not-allowed}
+.btn-reset{width:100%;padding:11px;margin-top:9px;background:transparent;border:1px solid var(--border);border-radius:var(--radius-sm);color:rgba(201,169,110,0.6);font-family:'Cairo';font-size:12.5px;cursor:pointer}
+.btn-reset:active{background:rgba(201,169,110,0.08)}
+
+/* Status */
+.status{display:none;align-items:center;gap:10px;padding:12px 14px;border-radius:var(--radius-sm);font-size:13px;margin-top:12px;line-height:1.5}
+.status.show{display:flex}
+.status.loading{background:rgba(201,169,110,0.08);border:1px solid var(--border2);color:var(--gold2)}
+.status.success{background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.3);color:#86efac}
+.status.error{background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.3);color:#fca5a5}
+.spin{width:15px;height:15px;border:2px solid rgba(201,169,110,0.25);border-top-color:var(--gold);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* History */
+.hist-row{display:flex;align-items:center;gap:10px;padding:11px 16px;border-bottom:1px solid var(--border)}
+.hist-row:last-child{border-bottom:none}
+.hist-info{flex:1;min-width:0}
+.hist-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--cream);font-size:13px}
+.hist-meta{font-size:10px;color:var(--gold);margin-top:2px;font-family:monospace;direction:ltr;text-align:right}
+.badge{display:inline-block;padding:3px 10px;border-radius:10px;font-size:11px;font-weight:700;flex-shrink:0}
+.badge-sale{background:rgba(96,165,250,0.14);color:#93c5fd;border:1px solid rgba(96,165,250,0.25)}
+.badge-rent{background:rgba(201,169,110,0.14);color:var(--gold2);border:1px solid var(--border2)}
+.empty{text-align:center;padding:30px 16px;color:rgba(201,169,110,0.35);font-size:13px;line-height:2}
+.foot{text-align:center;padding:6px;font-size:11px;color:rgba(201,169,110,0.28);letter-spacing:2px;font-family:'Cormorant Garamond',serif}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-brand">
+    <img class="hdr-logo" src="assets/villa_logo.png" alt="Villa">
+    <div class="hdr-name">
+      <span class="hdr-title">VILLA</span>
+      <span class="hdr-sub">REAL ESTATE</span>
+    </div>
+  </div>
+  <div class="hdr-right">
+    <div class="sheet-dot no" id="sheetDot" title="حالة الاتصال"></div>
+    <button class="settings-btn" onclick="toggleSettings()" title="إعدادات">⚙</button>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- Settings -->
+  <div class="settings-panel" id="settingsPanel">
+    <span class="settings-label">🔗 رابط SheetDB (SheetDB API URL)</span>
+    <input class="settings-input" id="urlInput" type="url" inputmode="url"
+      placeholder="https://sheetdb.io/api/v1/xxxxxxxx" oninput="onUrlInput()">
+    <div class="settings-row">
+      <button class="btn-ghost" onclick="testConnection()">🔌 اختبار الاتصال</button>
+      <button class="btn-gold" onclick="saveUrl()">💾 حفظ</button>
+    </div>
+    <div class="settings-row" style="margin-top:8px">
+      <span class="id-status id-no" id="connStatus" style="flex:1">غير متصل</span>
+    </div>
+    <div class="hint-box">
+      <b>كيف تحصل على الرابط؟</b><br>
+      افتح <code>sheetdb.io</code> ▸ Sign in with Google (اختر حساب الجدول) ▸ <b>Create new API</b> ▸
+      الصق رابط Google Sheet ▸ Create.<br>
+      تحصل على رابط مثل <code>https://sheetdb.io/api/v1/abc123</code> — الصقه هنا.<br><br>
+      <b>مهم:</b> اسم التبويب الأول <b>قائمة العقارات</b> وعناوين الأعمدة في الصف الأول.
+    </div>
+  </div>
+
+  <!-- Quick paste -->
+  <div class="card">
+    <div class="card-hd qp-toggle" id="qpToggle" onclick="toggleQP()">
+      <div style="display:flex;align-items:center;gap:11px">
+        <div class="card-icon">⚡</div>
+        <div>
+          <div class="card-title">لصق سريع — تعبئة تلقائية</div>
+          <div class="card-sub">الصق وصف العقار وسنملأ الحقول لك</div>
+        </div>
+      </div>
+      <span class="chev">▾</span>
+    </div>
+    <div class="qp-body" id="qpBody">
+      <div style="padding:0 16px 16px">
+        <textarea id="qpText" placeholder="مثال: بيت للبيع في حي اليرموك بالموصل، مساحة 250 متر، السعر 180 مليون، سعر المتر 720 ألف، 4 غرف نوم، 3 حمامات، سند ألف، ملكية فردية، المالك أحمد محمد 07701234567، https://maps.google.com/?q=36.35,43.15"></textarea>
+        <div class="chips">
+          <button class="chip" onclick="fillEx('ar1')">🏠 بيت بيع</button>
+          <button class="chip" onclick="fillEx('ar2')">🏢 شقة إيجار</button>
+          <button class="chip" onclick="fillEx('ar3')">🌍 أرض</button>
+          <button class="chip" onclick="fillEx('en1')">🇬🇧 English</button>
+        </div>
+        <button class="btn-gold" style="width:100%;margin-top:12px" onclick="autofill()">↧ تعبئة الحقول من النص</button>
+        <div style="font-size:10.5px;color:rgba(201,169,110,0.4);margin-top:8px;text-align:center">قراءة تقريبية — راجع الحقول قبل الحفظ</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Form -->
+  <div class="card">
+    <div class="card-hd">
+      <div class="card-icon">🏘️</div>
+      <div>
+        <div class="card-title">بيانات العقار</div>
+        <div class="card-sub">الحقول المعلّمة <span style="color:var(--red2)">◆</span> مطلوبة</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="grid">
+
+        <div class="field" data-req><label class="lbl">نوع المعاملة <span class="req">◆</span></label>
+          <select id="f_transaction"><option value="">— اختر —</option><option>بيع</option><option>إيجار</option></select></div>
+
+        <div class="field" data-req><label class="lbl">نوع العقار <span class="req">◆</span></label>
+          <select id="f_propertyType"><option value="">— اختر —</option><option>بيت</option><option>شقة</option><option>أرض</option><option>تجاري</option><option>فيلا</option><option>دوبلكس</option><option>مستودع</option><option>عمارة</option></select></div>
+
+        <div class="field" data-req><label class="lbl">المدينة <span class="req">◆</span></label>
+          <input class="inp" id="f_city" placeholder="الموصل"></div>
+
+        <div class="field" data-req><label class="lbl">الحي / المنطقة <span class="req">◆</span></label>
+          <input class="inp" id="f_district" placeholder="اليرموك"></div>
+
+        <div class="field full"><label class="lbl">العنوان التفصيلي</label>
+          <input class="inp" id="f_address" placeholder="الشارع، أقرب نقطة دالة"></div>
+
+        <div class="field full"><label class="lbl">رابط الموقع GPS</label>
+          <input class="inp" id="f_gps" inputmode="url" placeholder="https://maps.google.com/?q=..." style="direction:ltr;text-align:left"></div>
+
+        <div class="field" data-req><label class="lbl">السعر المطلوب (دينار) <span class="req">◆</span></label>
+          <input class="inp num" id="f_price" inputmode="numeric" placeholder="180000000"></div>
+
+        <div class="field"><label class="lbl">سعر المتر — الطلب الأولي</label>
+          <input class="inp num" id="f_pricePerM" inputmode="numeric" placeholder="720000"></div>
+
+        <div class="field" data-req><label class="lbl">المساحة م² <span class="req">◆</span></label>
+          <input class="inp num" id="f_size" inputmode="numeric" placeholder="250"></div>
+
+        <div class="field"><label class="lbl">غرف النوم</label>
+          <input class="inp num" id="f_bedrooms" inputmode="numeric" placeholder="4"></div>
+
+        <div class="field"><label class="lbl">الحمامات</label>
+          <input class="inp num" id="f_bathrooms" inputmode="numeric" placeholder="3"></div>
+
+        <div class="field"><label class="lbl">نوع السند (ألف / باء)</label>
+          <select id="f_deedCategory"><option value="">— اختر —</option><option>ألف</option><option>باء</option><option>ألف وباء</option><option>بدون سند</option></select></div>
+
+        <div class="field full"><label class="lbl">نوع السند والحالة</label>
+          <input class="inp" id="f_deedType" placeholder="طابو تسوية — مسجل"></div>
+
+        <div class="field full"><label class="lbl">السند — ملكية فردية أم ورثة</label>
+          <select id="f_deedOwner"><option value="">— اختر —</option><option>ملكية فردية</option><option>ورثة - شخصان</option><option>ورثة - 3 أشخاص</option><option>ورثة - أكثر</option><option>شركة</option></select></div>
+
+        <div class="field"><label class="lbl">اسم المالك</label>
+          <input class="inp" id="f_ownerName" placeholder="أحمد محمد"></div>
+
+        <div class="field"><label class="lbl">هاتف المالك</label>
+          <input class="inp num" id="f_ownerPhone" inputmode="tel" placeholder="07701234567"></div>
+
+        <div class="field full"><label class="lbl">ملاحظات</label>
+          <textarea id="f_notes" style="min-height:70px" placeholder="أي تفاصيل إضافية..."></textarea></div>
+
+      </div>
+
+      <div class="gold-line"></div>
+      <button class="btn-submit" id="submitBtn" onclick="submitForm()">⬆ حفظ في Google Sheet</button>
+      <button class="btn-reset" onclick="resetForm()">مسح الحقول</button>
+
+      <div class="status" id="statusBar">
+        <div class="spin" id="statusSpin" style="display:none"></div>
+        <span id="statusMsg"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- History -->
+  <div class="card">
+    <div class="card-hd">
+      <div class="card-icon">📋</div>
+      <div>
+        <div class="card-title">آخر العقارات المضافة</div>
+        <div class="card-sub" id="histCount">من هذا الجهاز</div>
+      </div>
+    </div>
+    <div id="histList">
+      <div class="empty">لا توجد عقارات بعد<br><span style="font-size:11px">ابدأ بإدخال أول عقار أعلاه</span></div>
+    </div>
+  </div>
+
+  <div class="foot">VILLA REAL ESTATE · نظام إدارة العقارات</div>
+</div>
+
+<script>
+const EX = {
+  ar1:'بيت للبيع في حي اليرموك بالموصل، مساحة 250 متر مربع، السعر 180 مليون دينار، سعر المتر 720 ألف، 4 غرف نوم، 3 حمامات، سند ألف، ملكية فردية، المالك أحمد محمد 07701234567، https://maps.google.com/?q=36.35,43.15، موقع ممتاز قريب من الخدمات',
+  ar2:'شقة للإيجار في حي الدواسة بالموصل، الطابق الثالث، مساحة 120 متر، الإيجار 500 ألف شهرياً، 3 غرف نوم، حمامان، مفروشة، سند باء، ملكية فردية، المالكة سارة علي 07709876543',
+  ar3:'أرض للبيع في منطقة النور بالموصل، المساحة 500 متر، السعر 95 مليون، سعر المتر 190 ألف، سند ألف، ملكية ورثة 3 أشخاص، المالك 07715551234، https://maps.google.com/?q=36.37,43.18',
+  en1:'House for sale in Yarmouk district Mosul, 250 sqm, price 180 million, price per sqm 720000, 4 bedrooms 3 bathrooms, deed Alif, single owner, Ahmed Mohammed 07701234567, https://maps.google.com/?q=36.35,43.15'
+};
+const HMAP = {"transaction": "نوع المعاملة", "propertyType": "نوع العقار", "city": "المدينة", "district": "الحي / المنطقة", "address": "العنوان التفصيلي", "gps": "رابط الموقع GPS", "price": "السعر المطلوب (دينار)", "pricePerM": "سعر المتر - الطلب الأولي", "size": "المساحة م²", "bedrooms": "غرف النوم", "bathrooms": "الحمامات", "deedType": "نوع السند والحالة", "deedOwner": "السند - ملكية فردية أم ورثة", "deedCategory": "نوع السند (ألف - باء)", "ownerName": "اسم المالك", "ownerPhone": "هاتف المالك", "notes": "ملاحظات"};
+const ID_HEADER = "رقم العقار";
+const DATE_HEADER = "تاريخ الإضافة";
+const K_URL='villa_sheetdb_url', K_HIS='villa_hist';
+let webUrl = localStorage.getItem(K_URL) || '';
+let hist   = JSON.parse(localStorage.getItem(K_HIS) || '[]');
+let settingsOpen=false, qpOpen=false;
+const $=id=>document.getElementById(id);
+const fields=Object.keys(HMAP);
+
+(function init(){
+  if(webUrl){ $('urlInput').value=webUrl; setDot(true); setConn('متصل ✓ — جاهز للحفظ',true); }
+  else { settingsOpen=true; $('settingsPanel').classList.add('open'); setDot(false); }
+  renderHistory();
+})();
+
+function toggleSettings(){ settingsOpen=!settingsOpen; $('settingsPanel').classList.toggle('open',settingsOpen); }
+function toggleQP(){ qpOpen=!qpOpen; $('qpBody').classList.toggle('open',qpOpen); $('qpToggle').classList.toggle('open',qpOpen); }
+function onUrlInput(){}
+function setDot(ok){ const d=$('sheetDot'); d.className='sheet-dot '+(ok?'ok':'no'); d.title=ok?'متصل ✓':'غير متصل'; }
+function setConn(msg,ok){ const e=$('connStatus'); e.textContent=msg; e.className='id-status '+(ok?'id-ok':'id-no'); }
+function validUrl(v){ return /^https:\/\/sheetdb\.io\/api\/v1\/[A-Za-z0-9]+/.test(v); }
+
+function saveUrl(){
+  const v=$('urlInput').value.trim();
+  if(!validUrl(v)){ setConn('❌ يجب أن يكون رابط sheetdb.io/api/v1/...',false); setDot(false); return; }
+  webUrl=v; localStorage.setItem(K_URL,webUrl); setDot(true); setConn('✓ تم الحفظ',true);
+}
+
+async function testConnection(){
+  const v=$('urlInput').value.trim()||webUrl;
+  if(!validUrl(v)){ setConn('أدخل رابط SheetDB صحيح أولاً',false); return; }
+  setConn('… جاري الاختبار',true);
+  try{
+    const r=await fetch(v+'?limit=1',{method:'GET'});
+    if(r.ok){ await r.json().catch(()=>null); webUrl=v; localStorage.setItem(K_URL,webUrl); setDot(true); setConn('✓ متصل بنجاح',true); }
+    else if(r.status===401||r.status===403){ setDot(false); setConn('⚠ الرابط يحتاج صلاحية — فعّل القراءة/الكتابة في SheetDB',false); }
+    else { setDot(false); setConn('⚠ استجابة غير متوقعة ('+r.status+')',false); }
+  }catch(e){ setDot(false); setConn('❌ فشل الاتصال — تحقق من الرابط والإنترنت',false); }
+}
+
+function fillEx(k){ $('qpText').value=EX[k]; }
+
+function autofill(){
+  const t=$('qpText').value.trim(); if(!t) return;
+  const has=(...w)=>w.some(x=>t.includes(x));
+  const setIf=(id,val)=>{ if(val!==''&&val!=null) $('f_'+id).value=val; };
+  setIf('transaction', /إيجار|للايجار|للإيجار|\brent/i.test(t)?'إيجار':(/بيع|للبيع|\bsale|\bsell/i.test(t)?'بيع':''));
+  const types=[['بيت','house'],['شقة','apartment'],['أرض','land'],['تجاري','commercial'],['فيلا','villa'],['دوبلكس','duplex'],['مستودع','warehouse'],['عمارة','building']];
+  for(const pair of types){ if(t.includes(pair[0])||new RegExp(pair[1],'i').test(t)){ setIf('propertyType',pair[0]); break; } }
+  const size=t.match(/(\d{2,5})\s*(?:متر|م²|م2|sqm|sq\.?m|m2)/i); if(size) setIf('size',size[1]);
+  const bed=t.match(/(\d{1,2})\s*(?:غرف|غرفة|bed)/i); if(bed) setIf('bedrooms',bed[1]);
+  const bath=t.match(/(\d{1,2})\s*(?:حمام|bath)/i); if(bath) setIf('bathrooms',bath[1]);
+  const ph=t.match(/0?7\d{8,9}/); if(ph) setIf('ownerPhone',ph[0]);
+  const gps=t.match(/https?:\/\/\S*(?:maps|goo\.gl|maps\.app)\S+/i)||t.match(/\d{1,2}\.\d{3,},\s*\d{1,3}\.\d{3,}/); if(gps) setIf('gps',gps[0]);
+  const amt=function(s){ const m=s.match(/([\d.,]+)\s*(مليون|million|m|ألف|الف|k|thousand)?/i); if(!m) return null; let n=parseFloat(m[1].replace(/,/g,'')); const u=(m[2]||'').toLowerCase(); if(/مليون|million|^m$/.test(u)) n*=1e6; else if(/ألف|الف|^k$|thousand/.test(u)) n*=1e3; return Math.round(n); };
+  const pm=t.match(/(?:سعر المتر|price\/?\s*m|price per)[^\d]*([\d.,]+\s*(?:ألف|الف|k|مليون|million)?)/i); if(pm){ const v=amt(pm[1]); if(v) setIf('pricePerM',v); }
+  const pr=t.match(/(?:السعر|الثمن|الإيجار|الايجار|price|rent)[^\d]*([\d.,]+\s*(?:مليون|million|ألف|الف|k)?)/i); if(pr){ const v=amt(pr[1]); if(v) setIf('price',v); }
+  if(has('ألف وباء','الف وباء')) setIf('deedCategory','ألف وباء');
+  else if(/بدون\s*سند/.test(t)) setIf('deedCategory','بدون سند');
+  else if(/سند\s*ألف|سند\s*الف|\balif/i.test(t)) setIf('deedCategory','ألف');
+  else if(/سند\s*باء|\bbaa/i.test(t)) setIf('deedCategory','باء');
+  if(t.includes('ورثة')){ setIf('deedOwner', /3|ثلاث|three/.test(t)?'ورثة - 3 أشخاص':(/شخصان|اثنان|two/.test(t)?'ورثة - شخصان':'ورثة - أكثر')); }
+  else if(/فردي/.test(t)) setIf('deedOwner','ملكية فردية');
+  else if(/شركة|company/i.test(t)) setIf('deedOwner','شركة');
+  showStatus('success','✓ تم ملء الحقول — راجعها ثم احفظ',false);
+  $('submitBtn').scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+function showStatus(type,msg,spin){ const b=$('statusBar'); b.className='status show '+type; $('statusMsg').textContent=msg; $('statusSpin').style.display=spin?'block':'none'; }
+function clearBad(){ document.querySelectorAll('.field.bad').forEach(f=>f.classList.remove('bad')); }
+function collect(){ const d={}; fields.forEach(f=>{ d[f]=$('f_'+f).value.trim(); }); return d; }
+function validate(d){ clearBad(); const need=['transaction','propertyType','city','district','price','size']; const miss=[]; need.forEach(f=>{ if(!d[f]){ $('f_'+f).closest('.field').classList.add('bad'); miss.push(f); } }); return miss; }
+
+async function nextId(){
+  try{ const r=await fetch(webUrl+'/count',{method:'GET'}); if(r.ok){ const c=await r.json(); const n=(c&&(c.rows!=null?c.rows:c.count))||0; return n+1; } }catch(e){}
+  try{ const r=await fetch(webUrl,{method:'GET'}); if(r.ok){ const a=await r.json(); if(Array.isArray(a)) return a.length+1; } }catch(e){}
+  return hist.length+1;
+}
+
+async function submitForm(){
+  if(!validUrl(webUrl)){ settingsOpen=true; $('settingsPanel').classList.add('open'); showStatus('error','⚙ أدخل رابط SheetDB أولاً من الإعدادات',false); window.scrollTo({top:0,behavior:'smooth'}); return; }
+  const d=collect(); const miss=validate(d);
+  if(miss.length){ showStatus('error','أكمل الحقول المطلوبة المعلّمة بالأحمر',false); return; }
+  $('submitBtn').disabled=true; showStatus('loading','… جاري الحفظ في Google Sheet',true);
+  try{
+    const n=await nextId();
+    const id='VRE-'+('000'+n).slice(-3);
+    const today=new Date().toISOString().slice(0,10);
+    const obj={}; obj[ID_HEADER]=id; obj[DATE_HEADER]=today;
+    fields.forEach(f=>{ obj[HMAP[f]] = d[f]; });
+    const r=await fetch(webUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({data:obj})});
+    const res=await r.json().catch(()=>({}));
+    if(r.ok && res.created>=1){
+      showStatus('success','✅ تم الحفظ — رقم العقار '+id,false);
+      hist.unshift({id:id,type:d.transaction||'بيع',name:(d.propertyType+' · '+d.district+' · '+d.city),time:new Date().toLocaleTimeString('ar-IQ',{hour:'2-digit',minute:'2-digit'})});
+      localStorage.setItem(K_HIS,JSON.stringify(hist.slice(0,40))); renderHistory(); resetForm(true);
+    } else { showStatus('error','⚠ تعذّر الحفظ — '+(res.error||('رمز '+r.status)),false); }
+  }catch(e){ showStatus('error','❌ فشل الإرسال — تحقق من الإنترنت ومن رابط SheetDB',false); }
+  finally{ $('submitBtn').disabled=false; }
+}
+
+function resetForm(keepStatus){ fields.forEach(f=>{ $('f_'+f).value=''; }); clearBad(); $('qpText').value=''; if(!keepStatus) $('statusBar').className='status'; }
+function renderHistory(){
+  const el=$('histList'); $('histCount').textContent=hist.length+' عقار · '+new Date().toLocaleDateString('ar-IQ');
+  if(!hist.length){ el.innerHTML='<div class="empty">لا توجد عقارات بعد<br><span style="font-size:11px">ابدأ بإدخال أول عقار أعلاه</span></div>'; return; }
+  el.innerHTML=hist.map(h=>'<div class="hist-row"><span class="badge '+(h.type==='إيجار'?'badge-rent':'badge-sale')+'">'+h.type+'</span><div class="hist-info"><div class="hist-name">'+h.name+'</div><div class="hist-meta">'+h.id+' · '+h.time+'</div></div></div>').join('');
+}
+</script>
+</body>
+</html>
