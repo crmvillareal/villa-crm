@@ -280,7 +280,7 @@ select{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.o
     </div>
   </div>
 
-  <div class="foot">VILLA REAL ESTATE · نظام إدارة العقارات</div>
+  <div class="foot">VILLA REAL ESTATE · نظام إدارة العقارات · <span style="color:var(--gold2)">v2 SheetDB</span></div>
 </div>
 
 <script>
@@ -370,6 +370,11 @@ async function nextId(){
   return hist.length+1;
 }
 
+async function fetchKeys(){
+  try{ const r=await fetch(webUrl+'/keys'); if(r.ok){ const k=await r.json(); if(Array.isArray(k)) return k; } }catch(e){}
+  return null;
+}
+
 async function submitForm(){
   if(!validUrl(webUrl)){ settingsOpen=true; $('settingsPanel').classList.add('open'); showStatus('error','⚙ أدخل رابط SheetDB أولاً من الإعدادات',false); window.scrollTo({top:0,behavior:'smooth'}); return; }
   const d=collect(); const miss=validate(d);
@@ -387,7 +392,14 @@ async function submitForm(){
       showStatus('success','✅ تم الحفظ — رقم العقار '+id,false);
       hist.unshift({id:id,type:d.transaction||'بيع',name:(d.propertyType+' · '+d.district+' · '+d.city),time:new Date().toLocaleTimeString('ar-IQ',{hour:'2-digit',minute:'2-digit'})});
       localStorage.setItem(K_HIS,JSON.stringify(hist.slice(0,40))); renderHistory(); resetForm(true);
-    } else { showStatus('error','⚠ تعذّر الحفظ — '+(res.error||('رمز '+r.status)),false); }
+    } else {
+      const keys = await fetchKeys();
+      let hint='';
+      if(keys===null){ hint=' — لم أتمكن من قراءة أعمدة الجدول (تحقق من صلاحية القراءة في SheetDB)'; }
+      else if(!keys.includes(HMAP['city'])){ hint=' — ⚠ SheetDB متصل بجدول أعمدته غير صحيحة. الأعمدة التي يراها: '+keys.slice(0,5).join(' | '); }
+      else { hint=' — الأعمدة صحيحة؛ تأكد أنك تستخدم آخر نسخة من الملف (v2)'; }
+      showStatus('error','⚠ تعذّر الحفظ — '+(res.error||('رمز '+r.status))+hint,false);
+    }
   }catch(e){ showStatus('error','❌ فشل الإرسال — تحقق من الإنترنت ومن رابط SheetDB',false); }
   finally{ $('submitBtn').disabled=false; }
 }
