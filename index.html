@@ -83,12 +83,12 @@ textarea::placeholder{color:rgba(232,220,200,0.25)}
 .chip:active{background:rgba(201,169,110,0.2)}
 
 /* Form fields */
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid{display:grid;grid-template-columns:1fr;gap:13px}
 .field{display:flex;flex-direction:column;gap:5px}
 .field.full{grid-column:1 / -1}
-.lbl{font-size:12px;color:var(--gold2);font-weight:600;display:flex;align-items:center;gap:5px}
+.lbl{font-size:13px;color:var(--gold2);font-weight:600;display:flex;align-items:center;gap:5px}
 .lbl .req{color:var(--red2);font-size:13px;line-height:1}
-.inp,select{width:100%;background:var(--navy2);border:1.5px solid var(--border);border-radius:var(--radius-sm);color:var(--cream2);font-family:'Cairo';font-size:14px;padding:11px 12px;outline:none;-webkit-appearance:none;appearance:none;transition:border-color .2s}
+.inp,select{width:100%;background:var(--navy2);border:1.5px solid var(--border);border-radius:var(--radius-sm);color:var(--cream2);font-family:'Cairo';font-size:16px;padding:14px 14px;min-height:52px;outline:none;-webkit-appearance:none;appearance:none;transition:border-color .2s}
 .inp:focus,select:focus{border-color:var(--gold)}
 .inp::placeholder{color:rgba(232,220,200,0.22)}
 .inp.num{direction:ltr;text-align:right}
@@ -122,6 +122,8 @@ select{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.o
 .badge-rent{background:rgba(201,169,110,0.14);color:var(--gold2);border:1px solid var(--border2)}
 .empty{text-align:center;padding:30px 16px;color:rgba(201,169,110,0.35);font-size:13px;line-height:2}
 .foot{text-align:center;padding:6px;font-size:11px;color:rgba(201,169,110,0.28);letter-spacing:2px;font-family:'Cormorant Garamond',serif}
+@media(min-width:640px){.grid{grid-template-columns:1fr 1fr;gap:14px}.inp,select{font-size:15px;min-height:48px;padding:12px 13px}}
+@media(max-width:380px){.hdr-title{font-size:17px;letter-spacing:2px}.hdr-logo{height:34px}.main{padding:14px 12px 70px}}
 </style>
 </head>
 <body>
@@ -280,7 +282,7 @@ select{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.o
     </div>
   </div>
 
-  <div class="foot">VILLA REAL ESTATE · نظام إدارة العقارات · <span style="color:var(--gold2)">v2 SheetDB</span></div>
+  <div class="foot">VILLA REAL ESTATE · نظام إدارة العقارات · <span style="color:var(--gold2)">v3 · mobile</span></div>
 </div>
 
 <script>
